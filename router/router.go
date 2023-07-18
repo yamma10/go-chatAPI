@@ -2,10 +2,11 @@ package router
 
 import (
 	"go-chat-api/controller"
-	"os"
+	//"net/http"
+	//"os"
 
 	"github.com/labstack/echo/v4"
-	"github.com/labstack/echo/middleware"
+	//"github.com/labstack/echo/v4/middleware"
 )
 
 func NewRouter(uc controller.IUserController) *echo.Echo {
@@ -15,14 +16,14 @@ func NewRouter(uc controller.IUserController) *echo.Echo {
 	
 
 	//CSRFのミドルウェア
-	e.Use(middleware.CSRFWithConfig(middleware.CSRFConfig{
+	/* e.Use(middleware.CSRFWithConfig(middleware.CSRFConfig{
 		CookiePath: "/",
 		CookieDomain: os.Getenv("API_DOMAIN"),
-		CookieHTTPOnly: true,
-		//CookieSameSite: http.SameSiteNoneMode,
+		//CookieHTTPOnly: true,
+		CookieSameSite: http.SameSiteNoneMode,
 		//CookieSameSite: http.SameSiteDefaultMode,
 		//CookieMaxAge: 60
-	}))
+	})) */
 
 
 	e.POST("/signup", uc.SignUp)

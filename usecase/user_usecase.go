@@ -1,12 +1,13 @@
 package usecase
 
 import (
+	
 	"go-chat-api/model"
 	"go-chat-api/repository"
 	"os"
 	"time"
 
-	"github.com/golang-jwt/jwt"
+	"github.com/golang-jwt/jwt/v4"
 	"golang.org/x/crypto/bcrypt"
 )
 
@@ -64,6 +65,7 @@ func (uu *userUsecase) Login(user model.User) (string, error) {
 		"user_id": storedUser.ID,
 		"exp": time.Now().Add(time.Hour * 12).Unix(),
 	})
+	//fmt.Println(token)
 
 	//指定されたキーで署名
 	tokenString, err := token.SignedString([]byte(os.Getenv("SECRET")))
