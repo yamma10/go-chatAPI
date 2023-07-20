@@ -14,4 +14,6 @@ type TalkRoomResponse struct {
 	ID uint `json:"id" gorm:"primaryKey"`
 	User1     uint      `json:"user_1" gorm:"foreignKey:User1ID"`
 	User2     uint      `json:"user_2" gorm:"foreignKey:User2ID"`
+	CreatedAt time.Time `json:"created_at"`
+	UpdatedAt time.Time `json:"updated_at"`
 }
