@@ -13,7 +13,7 @@ type ITalkRoomRepository interface {
 	GetRoomById(room *model.TalkRoom, userId uint, roomId uint) error
 	CreateRoom(room *model.TalkRoom) error
 	UpdateRoom(room *model.TalkRoom, userId uint, roomId uint) error
-	DeleteRoom(room *model.TalkRoom, userId uint ,roomId uint) error
+	DeleteRoom( userId uint ,roomId uint) error
 }
 
 type talkroomRepository struct {
@@ -68,7 +68,7 @@ func (tr *talkroomRepository) UpdateRoom(room *model.TalkRoom, userId uint, room
 	return nil
 }
 
-func (tr *talkroomRepository) DeleteRoom(room *model.TalkRoom, userId uint, roomId uint) error {
+func (tr *talkroomRepository) DeleteRoom(userId uint, roomId uint) error {
 	result := tr.db.Where("id=? AND (user1=? OR user2=?)",roomId, userId, userId).Delete(&model.TalkRoom{})
 	if result.Error != nil {
 		return result.Error 
