@@ -72,8 +72,8 @@ func (uc *userController) LogIn(c echo.Context) error {
 	cookie.HttpOnly = true
 	//クロスドメイン間でのcookieの送受信を許可
 	cookie.SameSite = http.SameSiteNoneMode
-
-	fmt.Println(cookie)
+	// fmt.Println(cookie)
+	// fmt.Println(cookie)
 	//cookieをHTTPResponseに加えるように設定する
 	c.SetCookie(cookie)
 
@@ -92,7 +92,7 @@ func (uc *userController) LogOut(c echo.Context) error {
 	cookie.HttpOnly = true
 	cookie.SameSite = http.SameSiteNoneMode
 
-	fmt.Println(cookie)
+	//fmt.Println(cookie)
 	c.SetCookie(cookie)
 	return c.NoContent(http.StatusOK)
 }

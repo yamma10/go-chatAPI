@@ -1,6 +1,7 @@
 package controller
 
 import (
+	"fmt"
 	"go-chat-api/model"
 	"go-chat-api/usecase"
 	"net/http"
@@ -22,23 +23,47 @@ type talkroomController struct {
 	tu usecase.ITalkRoomUsecase
 }
 
-func NewTaskController(tu usecase.ITalkRoomUsecase) ITalkRoomController {
+func NewTalkRoomController(tu usecase.ITalkRoomUsecase) ITalkRoomController {
 	return &talkroomController{tu}
 }
 
 func (tc *talkroomController) GetAllRooms(c echo.Context) error {
+	// println(c)
+	//tokenCookieは表示されるので、Cookieは取得できてる
+	// tokenCookie, err := c.Cookie("token")
+	// if err != nil {
+	// 		// エラー処理
+	// 		return c.JSON(http.StatusUnauthorized,"tokenがないよ")
+	// }
+	// fmt.Println(tokenCookie) 
+	fmt.Println("Hei")
+	fmt.Println(c);
+
 	//ユーザーから送られてくるJWTトークンからユーザーIDを取り出す
-	user := c.Get("user").(*jwt.Token)
+	//router.goで実装しているjwtのミドルウェアでデコードされたものがuserという名前をつけて自動的に格納してくれる
+	user, ok := c.Get("user").(*jwt.Token)
+	if !ok {
+		return c.JSON(http.StatusUnauthorized, "userがないよ")
+	}
+	//fmt.Println(user)
 	//userの中のClaimsを取り出す
 	claims := user.Claims.(jwt.MapClaims)
+	
 	//claimsの中のuser_idを取り出す
-	userId := claims["user_id"]
+	userId, ok := claims["user_id"].(float64)
+	if !ok {
+		return c.JSON(http.StatusInternalServerError, "Invalid user_id format")
+	}
 
+	
+	userIdTypeInfo := fmt.Sprintf("userIdの型は、%T", userId)
+	fmt.Println(userIdTypeInfo)
 	//型アサーション(型推論を上書き)したのちに型変換している
-	roomRes, err := tc.tu.GetAllRooms(uint(userId.(float64)))
+	roomRes, err := tc.tu.GetAllRooms(uint(userId))
 	if err != nil {
 		return c.JSON(http.StatusInternalServerError, err.Error())
 	}
+	//fmt.Println(roomRes)
 	return c.JSON(http.StatusOK, roomRes)
 }
 
