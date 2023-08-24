@@ -28,7 +28,8 @@ func (tr *talkroomRepository) GetAllRooms(rooms *[]model.TalkRoom, userId uint) 
 	//roomsという配列に格納されるので、
 	//rooms[0]などの形で取り出せる
 	//User1またはUser2がuserIdと等しいもの
-	if err := tr.db.Joins("User").Where("User1 = ? OR User2 = ?", userId, userId).Order("created_at").Find(rooms).Error; err != nil {
+	//findは、modelの中身と同じテーブルを探すという意味
+	if err := tr.db.Where("user1 = ? OR user2 = ?", userId, userId).Order("created_at").Find(rooms).Error; err != nil {
 		return err
 	}
 
