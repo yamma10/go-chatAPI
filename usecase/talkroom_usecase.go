@@ -72,6 +72,7 @@ func (tu *talkroomUsecase) CreateRoom(room model.TalkRoom) (model.TalkRoomRespon
 
 	resRoom := model.TalkRoomResponse {
 		ID: room.ID,
+		Name: room.Name,
 		User1: room.User1,
 		User2: room.User2,
 		CreatedAt: room.CreatedAt,
