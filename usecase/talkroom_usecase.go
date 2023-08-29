@@ -37,6 +37,7 @@ func (tu *talkroomUsecase) GetAllRooms(userId uint) ([]model.TalkRoomResponse, e
 	for _, v := range rooms {
 		t := model.TalkRoomResponse {
 			ID: v.ID,
+			Name: v.Name,
 			User1: v.User1,
 			User2: v.User2,
 			CreatedAt: v.CreatedAt,
@@ -72,6 +73,7 @@ func (tu *talkroomUsecase) CreateRoom(room model.TalkRoom) (model.TalkRoomRespon
 
 	resRoom := model.TalkRoomResponse {
 		ID: room.ID,
+		Name: room.Name,
 		User1: room.User1,
 		User2: room.User2,
 		CreatedAt: room.CreatedAt,
@@ -89,6 +91,7 @@ func (tu *talkroomUsecase) UpdateRoom(room model.TalkRoom, userId uint, roomId u
 
 	resRoom := model.TalkRoomResponse {
 		ID: room.ID,
+		Name: room.Name,
 		User1: room.User1,
 		User2: room.User2,
 		CreatedAt: room.CreatedAt,
