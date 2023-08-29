@@ -35,9 +35,7 @@ func (tc *talkroomController) GetAllRooms(c echo.Context) error {
 	// 		// エラー処理
 	// 		return c.JSON(http.StatusUnauthorized,"tokenがないよ")
 	// }
-	// fmt.Println(tokenCookie) 
-	fmt.Println("Hei")
-	fmt.Println(c);
+	// fmt.Println(tokenCookie)
 
 	//ユーザーから送られてくるJWTトークンからユーザーIDを取り出す
 	//router.goで実装しているjwtのミドルウェアでデコードされたものがuserという名前をつけて自動的に格納してくれる
@@ -48,14 +46,13 @@ func (tc *talkroomController) GetAllRooms(c echo.Context) error {
 	//fmt.Println(user)
 	//userの中のClaimsを取り出す
 	claims := user.Claims.(jwt.MapClaims)
-	
+
 	//claimsの中のuser_idを取り出す
 	userId, ok := claims["user_id"].(float64)
 	if !ok {
 		return c.JSON(http.StatusInternalServerError, "Invalid user_id format")
 	}
 
-	
 	userIdTypeInfo := fmt.Sprintf("userIdの型は、%T", userId)
 	fmt.Println(userIdTypeInfo)
 	//型アサーション(型推論を上書き)したのちに型変換している
@@ -87,12 +84,15 @@ func (tc *talkroomController) CreateRoom(c echo.Context) error {
 	user := c.Get("user").(*jwt.Token)
 	claims := user.Claims.(jwt.MapClaims)
 	userId := claims["user_id"]
-
+	userId  = uint(userId.(float64))
+	//fmt.Println(userId)
 	room := model.TalkRoom{}
 	if err := c.Bind(&room); err != nil {
 		return c.JSON(http.StatusBadRequest, err.Error())
 	}
-
+	fmt.Printf("room.User1 = %T\n",room.User1)
+	fmt.Printf("userId = %T\n",userId)
+	// fmt.Println(userId)
 	//roomには、User1とUser2が入っている
 	//ここは一旦
 	//room.User1 = uint(userId.(float64))
@@ -100,6 +100,7 @@ func (tc *talkroomController) CreateRoom(c echo.Context) error {
 	if userId == room.User1 || userId == room.User2 {
 
 	} else {
+
 		return c.JSON(http.StatusUnauthorized, nil)
 	}
 
