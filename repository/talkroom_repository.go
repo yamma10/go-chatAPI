@@ -56,14 +56,20 @@ func (tr *talkroomRepository) CreateRoom(room *model.TalkRoom) error {
 }
 
 func (tr *talkroomRepository) UpdateRoom(room *model.TalkRoom, userId uint, roomId uint) error {
+	// 更新したい新しい値を指定
+	newData := map[string]interface{}{
+		"updated_at": time.Now(),
+		"name": room.Name,
+	}
 	//Clauses(clause.Returning{})をしていすると更新後のレコードをModelに指定したroomオブジェクトに書き込んでくれる
-	result := tr.db.Model(room).Clauses(clause.Returning{}).Where("id=? AND (user1=? OR user2=?)", roomId,userId,userId).Update("updated_at", time.Now())
+	result := tr.db.Model(room).Clauses(clause.Returning{}).Where("id=? AND (user1=? OR user2=?)", roomId,userId,userId).Updates(newData)
+	fmt.Println()
 	if result.Error != nil {
 		return result.Error
 	}
 	//更新されたレコードの数を取得する
 	if result.RowsAffected < 1 {
-		return fmt.Errorf("object does not exist")
+		return fmt.Errorf("トークルームが存在しないか、権限がありません")
 	}
 
 	return nil
