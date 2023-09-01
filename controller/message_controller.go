@@ -1,6 +1,7 @@
 package controller
 
 import (
+	"fmt"
 	"go-chat-api/model"
 	"go-chat-api/usecase"
 	"net/http"
@@ -42,6 +43,7 @@ func (mc *messageController) GetAllMessages(c echo.Context) error {
 	id := c.Param("roomId")
 	//Atoi・・・stringからintへの変換
 	roomId, _ := strconv.Atoi(id)
+	//fmt.Println(roomId)
 	//型アサーション(型推論を上書き)したのちに型変換している
 	messageRes, err := mc.mu.GetAllMessages(uint(userId), uint(roomId))
 	if err != nil {
@@ -67,7 +69,11 @@ func (mc *messageController) CreateMessage(c echo.Context) error {
 		return c.JSON(http.StatusBadRequest, err.Error())
 	}
 
-	messageRes, err := mc.mu.CreateMessage(uint(userId), uint(roomId))
+	fmt.Println(message.Content)
+	message.SenderID = uint(userId)
+	message.RoomID = uint(roomId)
+
+	messageRes, err := mc.mu.CreateMessage(message)
 
 	//internalServerError・・・サーバー内部のエラー
 	//トークルームに所属してない場合はunauthorizedを返すようにする(後で実装)

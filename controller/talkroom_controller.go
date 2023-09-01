@@ -90,6 +90,8 @@ func (tc *talkroomController) CreateRoom(c echo.Context) error {
 	if err := c.Bind(&room); err != nil {
 		return c.JSON(http.StatusBadRequest, err.Error())
 	}
+	fmt.Println(room)
+	
 	fmt.Printf("room.User1 = %T\n",room.User1)
 	fmt.Printf("userId = %T\n",userId)
 	// fmt.Println(userId)
@@ -125,6 +127,7 @@ func (tc *talkroomController) UpdateRoom(c echo.Context) error {
 	if err := c.Bind(&room); err != nil {
 		return c.JSON(http.StatusBadRequest, err.Error())
 	}
+	fmt.Println(room)
 
 	roomRes, err := tc.tu.UpdateRoom(room, uint(userId.(float64)), uint(roomId))
 

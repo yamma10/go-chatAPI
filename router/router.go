@@ -11,7 +11,7 @@ import (
 	//"github.com/labstack/echo/v4/middleware"
 )
 
-func NewRouter(uc controller.IUserController, tc controller.ITalkRoomController) *echo.Echo {
+func NewRouter(uc controller.IUserController, tc controller.ITalkRoomController, mc controller.IMessageController) *echo.Echo {
 	e := echo.New()
 
 	//CORS
@@ -45,6 +45,18 @@ func NewRouter(uc controller.IUserController, tc controller.ITalkRoomController)
 	t.POST("", tc.CreateRoom)
 	t.PUT("/:roomId", tc.UpdateRoom)
 	t.DELETE("/:roomId", tc.DeleteRoom)
+
+	m := e.Group("/messages")
+	m.Use(echojwt.WithConfig(echojwt.Config{
+		SigningKey: []byte(os.Getenv("SECRET")),
+		TokenLookup: "cookie:token",
+	}))
+
+	m.GET("/:roomId", mc.GetAllMessages)
+	m.POST("/:roomId", mc.CreateMessage)
+	m.DELETE("/:messageId", mc.DeleteMessage)
+
+
 	return e
 	
 }
