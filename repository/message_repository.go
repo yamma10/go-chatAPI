@@ -9,7 +9,7 @@ import (
 type IMessageRepository interface {
 	GetAllMessages(messages *[]model.Message,userId, roomId uint) error
 	CreateMessage(message *model.Message,userId uint, roomId uint) error
-	DeleteMessage(message *model.Message, userId uint, messageId uint) error
+	DeleteMessage(userId uint, messageId uint) error
 }
 
 type messageRepository struct {
@@ -38,9 +38,10 @@ func (mr *messageRepository) CreateMessage(message *model.Message, userId uint, 
 	return nil
 }
 
-func (mr *messageRepository) DeleteMessage(message *model.Message, userId uint, messageId uint) error {
+func (mr *messageRepository) DeleteMessage(userId uint, messageId uint) error {
 	//messageのポインタをdbに渡している
-	if err := mr.db.Where("user_id=?", userId).Delete(message, messageId).Error; err != nil {
+	//Deleteに指定した構造体を同じテーブルの要素を削除する
+	if err := mr.db.Where("user_id=?", userId).Delete(&model.Message{}).Error; err != nil {
 		return err
 	}
 
