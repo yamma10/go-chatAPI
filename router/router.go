@@ -31,7 +31,7 @@ func NewRouter(uc controller.IUserController, tc controller.ITalkRoomController)
 	e.POST("/signup", uc.SignUp)
 	e.POST("/login", uc.LogIn)
 	e.POST("/logout", uc.LogOut)
-	e.GET("/scrf", uc.CsrfToken)
+	e.GET("/csrf", uc.CsrfToken)
 
 	t := e.Group("/rooms")
 	//tに対してjwtのミドルウェアを適用
