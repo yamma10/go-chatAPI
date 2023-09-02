@@ -58,7 +58,9 @@ func (tu *talkroomUsecase) GetRoomById(userId uint, roomId uint) (model.TalkRoom
 
 	resRoom := model.TalkRoomResponse {
 		ID: room.ID,
+		Name: room.Name,
 		User1: room.User1,
+		User2: room.User2,
 		CreatedAt: room.CreatedAt,
 		UpdatedAt: room.UpdatedAt,
 	}
