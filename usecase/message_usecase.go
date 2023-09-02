@@ -7,7 +7,7 @@ import (
 
 type IMessageUsecase interface {
 	GetAllMessages(userId, roomId uint) ([]model.MessageResponse, error)
-	CreateMessage(userId uint, roomId uint) (model.MessageResponse, error)
+	CreateMessage(message model.Message) (model.MessageResponse, error)
 	DeleteMessage(userId uint, messageId uint) error
 }
 
@@ -44,11 +44,9 @@ func (mu *messageUsecase) GetAllMessages(userId, roomId uint) ([]model.MessageRe
 	return resMessages, nil
 }
 
-func (mu *messageUsecase) CreateMessage(userId uint, roomId uint) (model.MessageResponse, error) {
-	message := model.Message{}
-
+func (mu *messageUsecase) CreateMessage(message model.Message) (model.MessageResponse, error) {
 	//messageの参照を渡している
-	if err := mu.mr.CreateMessage(&message, userId, roomId); err != nil {
+	if err := mu.mr.CreateMessage(&message); err != nil {
 		return model.MessageResponse{}, err
 	}
 
