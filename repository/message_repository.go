@@ -60,9 +60,17 @@ func (mr *messageRepository) CreateMessage(message *model.Message) error {
 }
 
 func (mr *messageRepository) DeleteMessage(userId uint, messageId uint) error {
+
+	result := mr.db.Where("id = ? AND sender_id=? ", messageId,userId).First(&model.Message{})
+
+	if result.RowsAffected == 0 {
+		// エラーハンドリング
+		return errors.New("メッセージが存在しないか、削除権限がありません")
+	}
+
 	//messageのポインタをdbに渡している
 	//Deleteに指定した構造体を同じテーブルの要素を削除する
-	if err := mr.db.Where("user_id=?", userId).Delete(&model.Message{}).Error; err != nil {
+	if err := mr.db.Where("id = ? AND sender_id=? ", messageId,userId).Delete(&model.Message{}).Error; err != nil {
 		return err
 	}
 
