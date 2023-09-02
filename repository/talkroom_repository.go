@@ -39,9 +39,17 @@ func (tr *talkroomRepository) GetAllRooms(rooms *[]model.TalkRoom, userId uint) 
 func (tr *talkroomRepository) GetRoomById(room *model.TalkRoom, userId uint, roomId uint) error {
 	//Firstの部分はroomの主キーがroomIdと一致するものをとってくる
 	//とってきた情報はGetRoomByIdの引数として渡されたTalkRoom構造体の参照に渡される
-	if err := tr.db.Joins("User").Where("user_id=?", userId).First(room,roomId).Error; err != nil {
-		return err
+	result := tr.db.Where("id = ? AND (user1 = ? OR user2 = ?)",roomId, userId, userId).Find(room)
+
+	if result.Error != nil {
+		return result.Error
 	}
+
+	if result.RowsAffected < 1 {
+		return fmt.Errorf("トークルームが存在しないか、権限がありません")
+	}
+
+	
 
 	return nil
 }
