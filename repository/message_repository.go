@@ -1,6 +1,7 @@
 package repository
 
 import (
+	"errors"
 	"go-chat-api/model"
 
 	"gorm.io/gorm"
@@ -38,10 +39,22 @@ func (mr *messageRepository) GetAllMessages(messages *[]model.Message,userId uin
 }
 
 func (mr *messageRepository) CreateMessage(message *model.Message) error {
-	//messageのポインタをdbに渡している
-	if err := mr.db.Create(message).Error; err != nil {
-		return err
+
+	result := mr.db.Where("id = ? AND(user1 = ? OR user2 = ?)",message.RoomID, message.SenderID, message.SenderID).First(&model.TalkRoom{})
+
+	if result.Error != nil {
+		// エラーハンドリング
+		return errors.New("トークルームに所属していません")
 	}
+	
+	//Senderがトークルームに所属している場合のみメッセージを送信できる
+	if result.RowsAffected > 0 {
+		//messageのポインタをdbに渡している
+		if err := mr.db.Create(message).Error; err != nil {
+			return err
+		}
+	} 
+	
 
 	return nil
 }
