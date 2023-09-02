@@ -7,7 +7,7 @@ import (
 )
 
 type IMessageRepository interface {
-	GetAllMessages(messages *[]model.Message, roomId uint) error
+	GetAllMessages(messages *[]model.Message,userId, roomId uint) error
 	CreateMessage(message *model.Message,userId uint, roomId uint) error
 	DeleteMessage(message *model.Message, userId uint, messageId uint) error
 }
@@ -20,9 +20,9 @@ func NewMessageRepository(db *gorm.DB) IMessageRepository {
 	return &messageRepository{db}
 }
 
-func (mr *messageRepository) GetAllMessages(messages *[]model.Message, roomId uint) error {
-	//Findで、引数と同じテーブルの中身を探す
-	if err := mr.db.Where("room_id=?", roomId).Order("created_at").Find(messages).Error; err != nil {
+func (mr *messageRepository) GetAllMessages(messages *[]model.Message,userId uint, roomId uint) error {
+	//Findで指定しているmessagesに格納される
+	if err := mr.db.Where("id=? AND (user1=? OR user2=?)",roomId, userId, userId).Order("created_at").Find(messages).Error; err != nil {
 		return err
 	}
 
