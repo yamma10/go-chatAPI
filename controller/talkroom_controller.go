@@ -99,17 +99,18 @@ func (tc *talkroomController) CreateRoom(c echo.Context) error {
 	//ここは一旦
 	//room.User1 = uint(userId.(float64))
 	//userIdとUser1または2は等しくないとダメ
-	if userId == room.User1 || userId == room.User2 {
-
+	if (userId == room.User1 || userId == room.User2 ) && (room.User1 != room.User2) {
+		
 	} else {
 
 		return c.JSON(http.StatusUnauthorized, nil)
 	}
 
 	roomRes, err := tc.tu.CreateRoom(room)
-	if err != nil {
-		return c.JSON(http.StatusInternalServerError, err.Error())
-	}
+		if err != nil {
+			return c.JSON(http.StatusInternalServerError, err.Error())
+		}
+	
 
 	return c.JSON(http.StatusCreated, roomRes)
 }
