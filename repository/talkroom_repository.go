@@ -55,6 +55,17 @@ func (tr *talkroomRepository) GetRoomById(room *model.TalkRoom, userId uint, roo
 }
 
 func (tr *talkroomRepository) CreateRoom(room *model.TalkRoom) error {
+	//並びを入れ替えた同じトークルームが存在するかどうかを確認する
+	result := tr.db.Where("(user1 = ? AND user2 = ?) OR (user1 = ? AND user2 = ?)", room.User1, room.User2, room.User2, room.User1).Find(&model.TalkRoom{})
+
+	if result.Error != nil {
+		return result.Error
+	}
+	//RowsAffectedは、取得したレコードの数を返す
+	if result.RowsAffected > 0 {
+		return fmt.Errorf("既に同じトークルームは存在します")
+	}
+
 	//roomのポインタをdbに渡している
 	if err := tr.db.Create(room).Error; err != nil {
 		return err
